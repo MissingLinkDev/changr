@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: white;
+    background: transparent;
+    overflow: hidden;
+}
+
+#app {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.image-options {
+    width: 240px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.image-button,
+.add-button {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.1);
+    outline: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    margin: 0;
+    user-select: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-button:hover,
+.add-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.image-button:active,
+.add-button:active {
+    transform: scale(0.95);
+}
+
+.image-button.selected {
+    border-color: #1976d2;
+    background-color: rgba(25, 118, 210, 0.2);
+    box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
+}
+
+.image-thumbnail {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.add-button {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.add-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.add-icon {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.add-button:hover .add-icon {
+    color: rgba(255, 255, 255, 1);
+}

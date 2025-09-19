@@ -1,0 +1,10 @@
+{
+    "name": "Changr",
+    "version": "1.0.0",
+    "manifest_version": 1,
+    "author": "Missing Link Dev",
+    "description": "A simple token image changer to quickly swap out between preset images",
+    "homepage_url": "https://github.com/Missing-Link-Dev/changr",
+    "icon": "/icon.png",
+    "background_url": "/background.html"
+}
