@@ -5,6 +5,6 @@
     "author": "Missing Link Dev",
     "description": "A simple token image changer to quickly swap out between preset images",
     "homepage_url": "https://github.com/Missing-Link-Dev/changr",
-    "icon": "/icon.png",
+    "icon": "/icon.svg",
     "background_url": "/background.html"
 }
