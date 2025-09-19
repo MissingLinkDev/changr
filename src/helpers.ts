@@ -28,6 +28,7 @@ export interface ImageOption {
     offset?: { x: number; y: number };
     // Transform settings
     rotation?: number;
+    mime?: string;
 }
 
 /**
@@ -48,7 +49,8 @@ export function isImageOption(obj: unknown): obj is ImageOption {
             typeof obj.offset.x === 'number' &&
             typeof obj.offset.y === 'number'
         )) &&
-        (obj.rotation === undefined || typeof obj.rotation === 'number')
+        (obj.rotation === undefined || typeof obj.rotation === 'number') &&
+        (obj.mime === undefined || typeof obj.mime === 'string')
     );
 }
 
@@ -90,7 +92,8 @@ export async function getImageOptions(): Promise<ImageOption[]> {
         name: selectedItem.name || "Original Image",
         dpi: selectedItem.grid?.dpi,
         offset: selectedItem.grid?.offset ? { ...selectedItem.grid.offset } : undefined,
-        rotation: selectedItem.rotation
+        rotation: selectedItem.rotation,
+        mime: selectedItem.image.mime,
     };
 
     // Save this initial option to the item's metadata
@@ -133,7 +136,8 @@ export async function addImageOption(imageDownload: any): Promise<void> {
         dpi: imageDownload.grid?.dpi,
         offset: imageDownload.grid?.offset ? { ...imageDownload.grid.offset } : undefined,
         // Initialize rotation to 0 for new images
-        rotation: 0
+        rotation: 0,
+        mime: imageDownload.image.mime
     };
 
     console.log("Created image option:", imageOption);
@@ -236,6 +240,10 @@ export async function updateItemWithImageOption(imageOption: ImageOption): Promi
                 imageItem.image.width = imageOption.width;
                 imageItem.image.height = imageOption.height;
 
+                if (imageOption.mime) {
+                    imageItem.image.mime = imageOption.mime; // Set mime type if available
+                }
+
                 // Apply the new scale to maintain visual size
                 item.scale = { x: newScaleX, y: newScaleY };
 
@@ -294,7 +302,8 @@ export async function saveCurrentImageState(customName?: string): Promise<void> 
         name: customName || `${selectedItem.name} (Current State)`,
         dpi: selectedItem.grid?.dpi,
         offset: selectedItem.grid?.offset ? { ...selectedItem.grid.offset } : undefined,
-        rotation: selectedItem.rotation
+        rotation: selectedItem.rotation,
+        mime: selectedItem.image.mime
     };
 
     // Add this state to the metadata

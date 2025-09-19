@@ -26,12 +26,18 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
     <div class="image-options">
       ${imageOptions
       .map(
-        (option) =>
-          `
-            <button class="image-button" id="${option.id}" title="${option.name}">
-              <img class="image-thumbnail" src="${option.url}" alt="${option.name}" />
-            </button>
-            `
+        (option) => {
+          const isVideo = option.mime?.startsWith('video/') ||
+            option.url.toLowerCase().match(/\.(webm|mp4|mov|avi|mkv|ogv)$/);
+          return `
+                <button class="image-button" id="${option.id}" title="${option.name}">
+                  ${isVideo
+              ? `<video class="image-thumbnail" src="${option.url}" muted preload="metadata"></video>`
+              : `<img class="image-thumbnail" src="${option.url}" alt="${option.name}" />`
+            }
+                </button>
+                `;
+        }
       )
       .join("")}
       ${isGM && imageOptions.length < 8 ? `
