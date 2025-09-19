@@ -146,7 +146,7 @@ async function handleAddButtonClick() {
     console.log("Selected item details:", selectedItem);
 
     // Determine the asset type based on the item's layer
-    let assetType: "CHARACTER" | "PROP" | "MOUNT" | "ATTACHMENT" | "NOTE";
+    let assetType: "CHARACTER" | "PROP" | "MOUNT" | "ATTACHMENT" | "NOTE" | "MAP";
     switch (selectedItem.layer) {
       case "CHARACTER":
         assetType = "CHARACTER";
@@ -162,6 +162,9 @@ async function handleAddButtonClick() {
         break;
       case "NOTE":
         assetType = "NOTE";
+        break;
+      case "MAP":
+        assetType = "MAP";
         break;
       default:
         assetType = "PROP"; // Default fallback
