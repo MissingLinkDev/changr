@@ -11,6 +11,8 @@ import {
 } from "./helpers";
 import "./styles.css";
 import { getPluginId } from "./getPluginId";
+import SimpleBar from 'simplebar';
+import 'simplebar/dist/simplebar.min.css';
 
 /**
  * This file represents the HTML of the popover that is shown once
@@ -23,30 +25,42 @@ import { getPluginId } from "./getPluginId";
 async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<void> {
   // Setup the document with the image buttons
   document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-    <div class="image-options">
-      ${imageOptions
+    <div class="scroll-container">
+      <div class="image-options">
+        ${imageOptions
       .map(
         (option) => {
           const isVideo = option.mime?.startsWith('video/') ||
             option.url.toLowerCase().match(/\.(webm|mp4|mov|avi|mkv|ogv)$/);
           return `
-                <button class="image-button" id="${option.id}" title="${option.name}">
-                  ${isVideo
+                  <button class="image-button" id="${option.id}" title="${option.name}">
+                    ${isVideo
               ? `<video class="image-thumbnail" src="${option.url}" muted preload="metadata"></video>`
               : `<img class="image-thumbnail" src="${option.url}" alt="${option.name}" />`
             }
-                </button>
-                `;
+                  </button>
+                  `;
         }
       )
       .join("")}
-      ${isGM && imageOptions.length < 8 ? `
-        <button class="add-button" id="add-image-option" title="Add new image option">
-          <div class="add-icon">+</div>
-        </button>
-      ` : ''}
+        ${isGM ? `
+          <button class="add-button" id="add-image-option" title="Add new image option">
+            <div class="add-icon">+</div>
+          </button>
+        ` : ''}
+      </div>
     </div>
   `;
+
+  // Initialize SimpleBar on the scroll container
+  const scrollContainer = document.querySelector('.scroll-container') as HTMLElement;
+  if (scrollContainer) {
+    new SimpleBar(scrollContainer, {
+      autoHide: true,
+      scrollbarMinSize: 20,
+      scrollbarMaxSize: 20,
+    });
+  }
 
   // Attach click listeners to image buttons
   document
@@ -61,7 +75,7 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
     });
 
   // Attach click listener to add button (only if GM)
-  if (isGM && imageOptions.length < 8) {
+  if (isGM) {
     document
       .querySelector<HTMLButtonElement>(".add-button")
       ?.addEventListener("click", () => {

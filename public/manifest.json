@@ -4,7 +4,7 @@
     "manifest_version": 1,
     "author": "Missing Link Dev",
     "description": "A simple token image changer to quickly swap out between preset images",
-    "homepage_url": "https://github.com/Missing-Link-Dev/changr",
+    "homepage_url": "https://github.com/MissingLinkDev/changr",
     "icon": "/icon.svg",
     "background_url": "/background.html"
 }

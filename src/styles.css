@@ -22,15 +22,22 @@ body {
     align-items: flex-start;
 }
 
-.image-options {
+.scroll-container {
     width: 240px;
+    max-height: 124px;
+    /* Match the embed height from background.ts */
+    background: transparent;
+}
+
+.image-options {
     padding: 8px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
     gap: 8px;
     background: transparent;
     box-sizing: border-box;
+    /* Remove fixed grid rows to allow natural height growth */
+    grid-auto-rows: min-content;
 }
 
 .image-button,
@@ -108,4 +115,52 @@ video.image-thumbnail {
 
 .add-button:hover .add-icon {
     color: rgba(255, 255, 255, 1);
+}
+
+/* SimpleBar customization to match Owlbear's UI with auto-hide */
+.scroll-container .simplebar-scrollbar:before {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+}
+
+.scroll-container .simplebar-track.simplebar-horizontal {
+    bottom: 6px;
+}
+
+.scroll-container .simplebar-track {
+    background-color: transparent;
+}
+
+.scroll-container .simplebar-scrollbar {
+    border-radius: 16px;
+    width: 10px;
+}
+
+.scroll-container .simplebar-track.simplebar-vertical {
+    width: 10px;
+    right: 0;
+}
+
+.scroll-container .simplebar-track.simplebar-horizontal {
+    height: 10px;
+}
+
+/* Remove webkit scrollbar styles that interfere with auto-hide */
+.scroll-container .simplebar-content-wrapper {
+    overflow: hidden;
+}
+
+.scroll-container .simplebar-content-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar when not needed */
+.simplebar-content-wrapper {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Ensure content fits properly */
+.simplebar-content {
+    padding: 0;
 }
