@@ -1,5 +1,7 @@
 # Changr - Image Swapper
 
+![Changr Example](https://changr.onrender.com/screenshots/example.png)
+
 An Owlbear Rodeo extension that allows GMs to set up multiple image variants for tokens and props, enabling quick switching between different states or appearances.
 
 ## Features
@@ -16,11 +18,11 @@ An Owlbear Rodeo extension that allows GMs to set up multiple image variants for
 
 ## Usage
 
-1. **Right-click on any image item**
+1. **Right-click on any image item** as a GM
 2. **Select 'Change Image'** from the context menu
-3. **Use the '+' button** to add new image variants GM Only
-4. **Click any thumbnail** to switch to that image GM or Owner
-5. **Right-click thumbnails** to remove variants GM only
+3. **Use the '+' button** to add new image variants
+4. **Click any thumbnail** to switch to that image
+5. **Right-click thumbnails** to remove variants
 
 ## Support
 
