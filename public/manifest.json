@@ -1,6 +1,6 @@
 {
     "name": "Changr",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "manifest_version": 1,
     "author": "Missing Link Dev",
     "description": "A simple token image changer to quickly swap out between preset images",
