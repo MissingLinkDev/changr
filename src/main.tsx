@@ -1,4 +1,4 @@
-import OBR, { type Image, isImage } from "@owlbear-rodeo/sdk";
+import OBR, { type Image, isImage, type Permission } from "@owlbear-rodeo/sdk";
 import {
   addImageOption,
   getImageOptions,
@@ -20,9 +20,46 @@ import 'simplebar/dist/simplebar.min.css';
  */
 
 /**
+ * Check if the player has create permissions for a specific layer
+ */
+async function hasLayerCreatePermission(layer: string): Promise<boolean> {
+  const createPermission = `${layer}_CREATE` as Permission;
+  const hasPermission = await OBR.player.hasPermission(createPermission);
+  return hasPermission;
+}
+
+/**
+ * Check if the player can add image options (either GM or has create permissions for the item's layer)
+ */
+async function canAddImageOptions(): Promise<boolean> {
+
+  // First check if player is GM
+  const isGM = await isPlayerGM();
+  if (isGM) {
+    return true;
+  }
+
+  // Check if player has create permissions for the selected item's layer
+  const selection = await OBR.player.getSelection();
+  if (!selection || selection.length === 0) {
+    return false;
+  }
+
+  const items = await OBR.scene.items.getItems<Image>([selection[0]]);
+  if (items.length === 0 || !isImage(items[0])) {
+    return false;
+  }
+
+  const selectedItem = items[0];
+  const hasPermission = await hasLayerCreatePermission(selectedItem.layer);
+  return hasPermission;
+}
+
+/**
  * Setup the image options panel with buttons and event listeners
  */
-async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<void> {
+async function setupPanel(imageOptions: ImageOption[], showAddButton: boolean): Promise<void> {
+
   // Setup the document with the image buttons
   document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <div class="scroll-container">
@@ -43,7 +80,7 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
         }
       )
       .join("")}
-        ${isGM ? `
+        ${showAddButton ? `
           <button class="add-button" id="add-image-option" title="Add new image option">
             <div class="add-icon">+</div>
           </button>
@@ -51,7 +88,6 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
       </div>
     </div>
   `;
-
   // Initialize SimpleBar on the scroll container
   const scrollContainer = document.querySelector('.scroll-container') as HTMLElement;
   if (scrollContainer) {
@@ -74,8 +110,8 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
       });
     });
 
-  // Attach click listener to add button (only if GM)
-  if (isGM) {
+  // Attach click listener to add button (only if shown)
+  if (showAddButton) {
     document
       .querySelector<HTMLButtonElement>(".add-button")
       ?.addEventListener("click", () => {
@@ -87,31 +123,59 @@ async function setupPanel(imageOptions: ImageOption[], isGM: boolean): Promise<v
   await updateImageButtons(imageOptions);
 }
 
+/**
+ * Refresh the entire UI based on current permissions and selection
+ */
+async function refreshUI(): Promise<void> {
+  try {
+    const imageOptions = await getImageOptions();
+    const showAddButton = await canAddImageOptions();
+    await setupPanel(imageOptions, showAddButton);
+  } catch (error) {
+    console.error("Error refreshing UI:", error);
+  }
+}
+
 OBR.onReady(async () => {
-  // Check if player is GM - only GMs can use this extension
-  const isGM = await isPlayerGM();
+
   // Get the image options for the selected item
   const imageOptions = await getImageOptions();
 
-  // Setup the panel
-  await setupPanel(imageOptions, isGM);
+  // Check if add button should be shown
+  const showAddButton = await canAddImageOptions();
 
-  // Add change listener for updating button states
+  // Setup the panel
+  await setupPanel(imageOptions, showAddButton);
+
+  // Add change listener for player permissions
+  OBR.player.onChange(async () => {
+    await refreshUI();
+  });
+
+  // Add change listener for updating button states and permissions
   OBR.scene.items.onChange(async () => {
     const updatedImageOptions = await getImageOptions();
-    updateImageButtons(updatedImageOptions);
+    await updateImageButtons(updatedImageOptions);
+
+    // Also check if add button visibility should change
+    const showAddButton = await canAddImageOptions();
+    const currentAddButton = document.querySelector('.add-button');
+    const shouldHaveAddButton = showAddButton;
+
+    // If the add button state changed, refresh the entire UI
+    if ((currentAddButton && !shouldHaveAddButton) || (!currentAddButton && shouldHaveAddButton)) {
+      await refreshUI();
+    }
   });
 });
 
 async function handleImageButtonClick(button: HTMLButtonElement) {
-  console.log("Image button clicked:", button.id);
 
   // Find the image option that matches this button
   const imageOptions = await getImageOptions();
   const selectedOption = imageOptions.find(option => option.id === button.id);
 
   if (selectedOption) {
-    console.log("Switching to image option:", selectedOption);
     await updateItemWithImageOption(selectedOption);
 
     // Update button states to reflect the new selection
@@ -122,28 +186,22 @@ async function handleImageButtonClick(button: HTMLButtonElement) {
 }
 
 async function handleAddButtonClick() {
-  console.log("Add button clicked");
 
   try {
     // Get the currently selected item to determine its asset type
     const selection = await OBR.player.getSelection();
-    console.log("Selection:", selection);
 
     if (!selection || selection.length === 0) {
-      console.log("No item selected");
       return;
     }
 
     const items = await OBR.scene.items.getItems<Image>([selection[0]]);
-    console.log("Selected items:", items);
 
     if (items.length === 0 || !isImage(items[0])) {
-      console.log("Selected item is not an image");
       return;
     }
 
     const selectedItem = items[0];
-    console.log("Selected item details:", selectedItem);
 
     // Determine the asset type based on the item's layer
     let assetType: "CHARACTER" | "PROP" | "MOUNT" | "ATTACHMENT" | "NOTE" | "MAP";
@@ -170,31 +228,14 @@ async function handleAddButtonClick() {
         assetType = "PROP"; // Default fallback
     }
 
-    console.log("Determined asset type:", assetType);
-
     // Open image picker dialog
-    console.log("Opening image picker...");
     const downloadResult = await OBR.assets.downloadImages(false, undefined, assetType);
-    console.log("Download result:", downloadResult);
 
     if (downloadResult && downloadResult.length > 0) {
-      console.log("Image selected, adding to metadata...");
-
       // Add the new image option to metadata
       await addImageOption(downloadResult[0]);
-      console.log("Image option added successfully");
-
       // Refresh the UI with updated image options
-      const updatedImageOptions = await getImageOptions();
-      console.log("Updated image options:", updatedImageOptions);
-
-      // Check if player is GM to determine if add button should be shown
-      const isGM = await isPlayerGM();
-
-      // Refresh the panel
-      console.log("Refreshing UI...");
-      await setupPanel(updatedImageOptions, isGM);
-      console.log("UI refresh complete");
+      await refreshUI();
     } else {
       console.log("No image selected or download cancelled");
     }
@@ -223,7 +264,6 @@ async function handleImageButtonRightClick(button: HTMLButtonElement, event: Mou
   const isCurrentImage = selectedItem.image.url === selectedOption.url;
 
   if (isCurrentImage) {
-    console.log("Cannot remove currently selected image");
     return;
   }
 
@@ -262,9 +302,5 @@ async function removeImageOption(optionId: string): Promise<void> {
 }
 
 async function refreshImageOptionsUI(): Promise<void> {
-  const updatedImageOptions = await getImageOptions();
-  const isGM = await isPlayerGM();
-
-  // Use the setupPanel function to refresh the UI
-  await setupPanel(updatedImageOptions, isGM);
+  await refreshUI();
 }
