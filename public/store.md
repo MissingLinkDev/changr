@@ -2,17 +2,17 @@
 title: Changr
 description: A simple token image changer to quickly swap out between preset images.
 author: Missing Link Dev
-image: https://changr.onrender.com/screenshots/example.png
-icon: https://changr.onrender.com/icon.svg
+image: https://changr.missinglinkdev.com/screenshots/example.png
+icon: https://changr.missinglinkdev.com/icon.svg
 tags:
   - tool
-manifest: https://changr.onrender.com/manifest.json
+manifest: https://changr.missinglinkdev.com/manifest.json
 learn-more: https://github.com/MissingLinkDev/changr
 ---
 
 # Changr - Image Swapper
 
-![Changr Example](https://changr.onrender.com/screenshots/example.png)
+![Changr Example](https://changr.missinglinkdev.com/screenshots/example.png)
 
 An Owlbear Rodeo extension that allows GMs to set up multiple image variants for tokens and props, enabling quick switching between different states or appearances.
 
@@ -25,7 +25,7 @@ An Owlbear Rodeo extension that allows GMs to set up multiple image variants for
 
 ## Installation
 
-1. **Install from the Rogue Store:** [Changr on Rogue Store](https://owlbear.rogue.pub/extension/https://changr.onrender.com/manifest.json)
+1. **Install from the Rogue Store:** [Changr on Rogue Store](https://owlbear.rogue.pub/extension/https://changr.missinglinkdev.com/manifest.json)
 2. **Coming soon to the official Owlbear Rodeo store page**
 
 ## Usage
