@@ -227,14 +227,6 @@ export async function updateItemWithImageOption(imageOption: ImageOption): Promi
                 // Cast to any to work around WritableDraft typing limitations
                 const imageItem = item as any;
 
-                // Get current visual dimensions (image size * scale)
-                const currentVisualWidth = imageItem.image.width * item.scale.x;
-                const currentVisualHeight = imageItem.image.height * item.scale.y;
-
-                // Calculate new scale to maintain the same visual size
-                const newScaleX = currentVisualWidth / imageOption.width;
-                const newScaleY = currentVisualHeight / imageOption.height;
-
                 // Update the image properties
                 imageItem.image.url = imageOption.url;
                 imageItem.image.width = imageOption.width;
@@ -243,9 +235,6 @@ export async function updateItemWithImageOption(imageOption: ImageOption): Promi
                 if (imageOption.mime) {
                     imageItem.image.mime = imageOption.mime; // Set mime type if available
                 }
-
-                // Apply the new scale to maintain visual size
-                item.scale = { x: newScaleX, y: newScaleY };
 
                 // Apply grid settings if they exist
                 if (imageOption.dpi !== undefined || imageOption.offset !== undefined) {
@@ -263,13 +252,13 @@ export async function updateItemWithImageOption(imageOption: ImageOption): Promi
                     if (imageOption.offset !== undefined) {
                         imageItem.grid.offset = { ...imageOption.offset };
                     }
+
                 }
 
                 // Apply rotation if specified
                 if (imageOption.rotation !== undefined) {
                     item.rotation = imageOption.rotation;
                 }
-
                 // Update the name
                 item.name = imageOption.name;
             }
