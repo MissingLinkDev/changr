@@ -25,8 +25,7 @@ An Owlbear Rodeo extension that allows GMs to set up multiple image variants for
 
 ## Installation
 
-1. **Install from the Rogue Store:** [Changr on Rogue Store](https://owlbear.rogue.pub/extension/https://changr.missinglinkdev.com/manifest.json)
-2. **Coming soon to the official Owlbear Rodeo store page**
+1. **Install from the OBR Extension Store:** 
 
 ## Usage
 
