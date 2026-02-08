@@ -25,7 +25,7 @@ An Owlbear Rodeo extension that allows GMs to set up multiple image variants for
 
 ## Installation
 
-1. **Install from the OBR Extension Store:** 
+1. **Install from the OBR Extension Store** 
 
 ## Usage
 
